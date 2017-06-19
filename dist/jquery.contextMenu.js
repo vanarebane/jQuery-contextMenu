@@ -274,6 +274,14 @@
             contextmenu: function (e) {
                 var $this = $(this);
 
+                // make the trigger possible to be either string or function
+                let edt;
+                if(typeof e.data.trigger === "function")
+                    edt = e.data.trigger();
+                else{
+                    edt = "right";
+                }
+                
                 // disable actual context-menu if we are using the right mouse button as the trigger
                 if (e.data.trigger === 'right') {
                     e.preventDefault();
@@ -281,13 +289,13 @@
                 }
 
                 // abort native-triggered events unless we're triggering on right click
-                if ((e.data.trigger !== 'right' && e.data.trigger !== 'demand') && e.originalEvent) {
+                if ((edt !== 'right' && edt !== 'demand') && e.originalEvent) {
                     return;
                 }
 
                 // Let the current contextmenu decide if it should show or not based on its own trigger settings
                 if (typeof e.mouseButton !== 'undefined' && e.data) {
-                    if (!(e.data.trigger === 'left' && e.mouseButton === 0) && !(e.data.trigger === 'right' && e.mouseButton === 2)) {
+                    if (!(edt === 'left' && e.mouseButton === 0) && !(edt === 'right' && e.mouseButton === 2)) {
                         // Mouse click is not valid.
                         return;
                     }
